@@ -61,9 +61,9 @@ public class Vector {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        Vector vector_2 = (Vector) obj;
+        Vector vector2 = (Vector) obj;
         for (int i = 0; i < this.getDimension(); i++) {
-            if (this.getCoordinate(i) != vector_2.getCoordinate(i))
+            if (this.getCoordinate(i) != vector2.getCoordinate(i))
                 return false;
         }
         return true;
