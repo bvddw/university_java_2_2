@@ -1,14 +1,22 @@
-public class Product {
+public class Product implements Comparable<Product> {
+    private final int productId;
     private String productName;
     private String productBrand;
-    private Float productPrice;
+    private float productPrice;
     private String productDescription;
 
-    public Product(String productName, String productBrand, Float productPrice, String productDescription) {
+    private static int lastAssignedProductID = 0;
+
+    public Product(String productName, String productBrand, float productPrice, String productDescription) {
+        this.productId = ++lastAssignedProductID;
         this.productName = productName;
         this.productBrand = productBrand;
         this.productPrice = productPrice;
         this.productDescription = productDescription;
+    }
+
+    public int getProductId() {
+        return productId;
     }
 
     public String getProductName() {
@@ -27,11 +35,11 @@ public class Product {
         productBrand = newProductBrand;
     }
 
-    public Float getProductPrice() {
+    public float getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(Float newProductPrice) {
+    public void setProductPrice(float newProductPrice) {
         productPrice = newProductPrice;
     }
 
@@ -45,20 +53,24 @@ public class Product {
 
     @Override
     public String toString() {
-        return "\n\tproductName=" + productName +
-                "\n\tproductBrand=" + productBrand +
-                "\n\tproductPrice=" + productPrice +
-                "\n\tproductDescription=" + productDescription + '\n';
+        return "\n\tName=" + productName +
+                "\n\tBrand=" + productBrand +
+                "\n\tPrice=" + productPrice +
+                "\n\tDescription=" + productDescription;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
-        if (!(obj instanceof Product)) return false;
-        Product product = (Product) obj;
+        if (!(obj instanceof Product product)) return false;
         return productName.equals(product.productName) &&
                 productBrand.equals(product.productBrand) &&
-                productPrice.equals(product.productPrice) &&
+                Math.abs(productPrice - product.productPrice) <= 0.0f &&
                 productDescription.equals(product.productDescription);
+    }
+
+    @Override
+    public int compareTo(Product otherProduct) {
+        return Integer.compare(this.productId, otherProduct.productId);
     }
 }

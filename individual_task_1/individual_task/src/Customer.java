@@ -1,15 +1,16 @@
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Customer {
-    protected Integer customerID;
+    protected int customerID;
     protected String customerName;
     protected String customerEmailAddress;
     protected String customerPhoneNumber;
-    protected Float customerFunds;
-    protected ArrayList<Product> shoppingCart;
+    protected float customerFunds;
+    protected TreeMap<Product, Integer> shoppingCart;
     protected ArrayList<Order> orderList;
 
-    private static Integer lastAssignedCustomerID = 0;
+    private static int lastAssignedCustomerID = 0;
 
     public Customer(String customerName, String customerEmailAddress, String customerPhoneNumber) {
         this.customerID = ++lastAssignedCustomerID;
@@ -17,16 +18,20 @@ public class Customer {
         this.customerEmailAddress = customerEmailAddress;
         this.customerPhoneNumber = customerPhoneNumber;
         this.customerFunds = 0.0f;
-        shoppingCart = new ArrayList<>();
+        shoppingCart = new TreeMap<Product, Integer>();
         orderList = new ArrayList<>();
     }
 
-    public Customer(Integer customerID, String customerName, String customerEmailAddress, String customerPhoneNumber, Float customerFunds) {
+    public Customer(int customerID, String customerName, String customerEmailAddress, String customerPhoneNumber, float customerFunds) {
         this.customerID = customerID;
         this.customerName = customerName;
         this.customerEmailAddress = customerEmailAddress;
         this.customerPhoneNumber = customerPhoneNumber;
         this.customerFunds = customerFunds;
+    }
+
+    public int getCustomerID() {
+        return customerID;
     }
 
     public String getCustomerName() {
@@ -53,16 +58,15 @@ public class Customer {
         this.customerPhoneNumber = customerPhoneNumber;
     }
 
-    public ArrayList<Product> getShoppingCart() {
+    public TreeMap<Product, Integer> getShoppingCart() {
         return shoppingCart;
     }
 
-    public boolean addFunds(Float funds) {
+    public void addFunds(float funds) {
         this.customerFunds += funds;
-        return true;
     }
 
-    public boolean withdrawFunds(Float funds) {
+    public boolean withdrawFunds(float funds) {
         if (this.customerFunds - funds < 0) {
             return false;
         }
@@ -70,16 +74,31 @@ public class Customer {
         return true;
     }
 
-    public Float getCustomerFunds() {
+    public float getCustomerFunds() {
         return customerFunds;
     }
 
-    public void addProduct(Product product) {
-        shoppingCart.add(product);
+    public void addProduct(Product product, int quantity) {
+        if (shoppingCart.containsKey(product)) {
+            shoppingCart.put(product, shoppingCart.get(product) + quantity);
+        } else {
+            shoppingCart.put(product, quantity);
+        }
     }
 
-    public Boolean removeProduct(Product product) {
-        return shoppingCart.remove(product);
+    public boolean removeProduct(Product product, int quantity) {
+        if (!shoppingCart.containsKey(product)) {
+            return false;
+        }
+        if (shoppingCart.get(product) < quantity) {
+            return false;
+        }
+        if (shoppingCart.get(product) - quantity <= 0) {
+            shoppingCart.remove(product);
+            return true;
+        }
+        shoppingCart.put(product, shoppingCart.get(product) - quantity);
+        return true;
     }
 
     private void cleanShoppingCart() {
@@ -99,18 +118,18 @@ public class Customer {
         return null;
     }
 
-    public Boolean confirmCart() {
+    public boolean confirmCart() {
         if (shoppingCart.isEmpty()) {
             return false;
         }
-        Float total = calculateTotalPrice();
+        float total = calculateTotalPrice();
         if (total > customerFunds) {
             return false;
         }
         customerFunds -= total;
         Order order = new Order(customerID, shoppingCart);
-        shoppingCart.remove(order);
         orderList.add(order);
+        shoppingCart = new TreeMap<>();
         return true;
     }
 
@@ -123,12 +142,12 @@ public class Customer {
     public String toString() {
         return "Customer \n\tcustomerID is " + customerID +
                 "\n\tName is " + customerName +
-                "\n\tFunds: " + customerFunds;
+                "\n\tFunds: $" + customerFunds;
     }
 
-    protected Float calculateTotalPrice() {
-        Float totalPrice = 0.0f;
-        for (Product product : shoppingCart) {
+    protected float calculateTotalPrice() {
+        float totalPrice = 0.0f;
+        for (Product product : shoppingCart.keySet()) {
             totalPrice += product.getProductPrice();
         }
         return totalPrice;
