@@ -4,7 +4,7 @@ import java.util.TreeMap;
 public class Customer {
     protected int customerID;
     protected String customerName;
-    protected String customerEmailAddress;
+    protected String customerEmail;
     protected String customerPhoneNumber;
     protected float customerFunds;
     protected TreeMap<Product, Integer> shoppingCart;
@@ -12,20 +12,20 @@ public class Customer {
 
     private static int lastAssignedCustomerID = 0;
 
-    public Customer(String customerName, String customerEmailAddress, String customerPhoneNumber) {
+    public Customer(String customerName, String customerEmail, String customerPhoneNumber) {
         this.customerID = ++lastAssignedCustomerID;
         this.customerName = customerName;
-        this.customerEmailAddress = customerEmailAddress;
+        this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
         this.customerFunds = 0.0f;
         shoppingCart = new TreeMap<Product, Integer>();
         orderList = new ArrayList<>();
     }
 
-    public Customer(int customerID, String customerName, String customerEmailAddress, String customerPhoneNumber, float customerFunds) {
+    public Customer(int customerID, String customerName, String customerEmail, String customerPhoneNumber, float customerFunds) {
         this.customerID = customerID;
         this.customerName = customerName;
-        this.customerEmailAddress = customerEmailAddress;
+        this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
         this.customerFunds = customerFunds;
     }
@@ -34,20 +34,16 @@ public class Customer {
         return customerID;
     }
 
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
     public String getCustomerName() {
         return customerName;
     }
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
-    }
-
-    public String getCustomerEmailAddress() {
-        return customerEmailAddress;
-    }
-
-    public void setCustomerEmailAddress(String customerEmailAddress) {
-        this.customerEmailAddress = customerEmailAddress;
     }
 
     public String getCustomerPhoneNumber() {
@@ -101,7 +97,7 @@ public class Customer {
         return true;
     }
 
-    private void cleanShoppingCart() {
+    public void cleanShoppingCart() {
         shoppingCart.clear();
     }
 
@@ -131,11 +127,6 @@ public class Customer {
         orderList.add(order);
         shoppingCart = new TreeMap<>();
         return true;
-    }
-
-    public VIPCustomer becomeAVIP() {
-        System.out.println("Congratulations! " + this.customerName + " is now a VIP customer.");
-        return new VIPCustomer(customerID, customerName, customerEmailAddress, customerPhoneNumber, customerFunds, shoppingCart, orderList);
     }
 
     @Override

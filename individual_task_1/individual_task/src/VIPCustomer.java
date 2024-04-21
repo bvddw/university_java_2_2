@@ -4,15 +4,15 @@ import java.util.TreeMap;
 public class VIPCustomer extends Customer {
     private final float specialPriceRate;
 
-    public VIPCustomer(int customerID, String customerName, String customerEmailAddress, String customerPhoneNumber, float customerFunds, TreeMap<Product, Integer> shoppingCart, ArrayList<Order> orderList) {
-        super(customerID, customerName, customerEmailAddress, customerPhoneNumber, customerFunds);
+    public VIPCustomer(int customerID, String customerName, String customerEmail, String customerPhoneNumber, float customerFunds, TreeMap<Product, Integer> shoppingCart, ArrayList<Order> orderList) {
+        super(customerID, customerName, customerEmail, customerPhoneNumber, customerFunds);
         this.specialPriceRate = 0.8f;
         this.shoppingCart = shoppingCart;
         this.orderList = orderList;
     }
 
     public VIPCustomer(Customer customer) {
-        super(customer.getCustomerID(), customer.getCustomerName(), customer.getCustomerEmailAddress(), customer.getCustomerPhoneNumber(), customer.getCustomerFunds());
+        super(customer.getCustomerID(), customer.getCustomerName(), customer.getCustomerEmail(), customer.getCustomerPhoneNumber(), customer.getCustomerFunds());
         this.specialPriceRate = 0.8f;
         this.shoppingCart = customer.getShoppingCart();
         this.orderList = customer.getOrderList();

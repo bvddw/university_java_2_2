@@ -44,49 +44,10 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Order " + orderID;
+        String result = "Order " + orderID;
+        for (Product product : products.keySet()) {
+            result += " " + product + "\n\tQuantity: " + products.get(product);
+        }
+        return result;
     }
 }
-
-
-
-//import java.util.ArrayList;
-//
-//public class Order {
-//        private final int orderID;
-//        private final int customerID;
-//        ArrayList<Product> products;
-//
-//        private static int lastAssignedOrderID = 1;
-//
-//        public Order(int customerID, ArrayList<Product> products) {
-//            this.orderID = lastAssignedOrderID++;
-//            this.customerID = customerID;
-//            this.products = products;
-//        }
-//
-//        public int getOrderID() {
-//            return orderID;
-//        }
-//
-//        public int getCustomerId() {
-//            return customerID;
-//        }
-//
-//        public ArrayList<Product> getProducts() {
-//            return products;
-//        }
-//
-//        public float calculateTotalPrice() {
-//            float total = 0;
-//            for (Product product : products) {
-//                total += product.getProductPrice();
-//            }
-//            return total;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return "Order " + orderID;
-//        }
-//}
