@@ -1,5 +1,3 @@
-import java.io.Serializable;
-
 public class Author {
     private String name;
     private String surname;
