@@ -1,5 +1,11 @@
-public class Product implements Comparable<Product> {
-    private final int productId;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+
+public class Product implements Comparable<Product>, Externalizable {
+    private int productId;
     private String productName;
     private String productBrand;
     private float productPrice;
@@ -13,6 +19,9 @@ public class Product implements Comparable<Product> {
         this.productBrand = productBrand;
         this.productPrice = productPrice;
         this.productDescription = productDescription;
+    }
+
+    public Product() {
     }
 
     public int getProductId() {
@@ -72,5 +81,27 @@ public class Product implements Comparable<Product> {
     @Override
     public int compareTo(Product otherProduct) {
         return Integer.compare(this.productId, otherProduct.productId);
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+//        private String productName;
+//        private String productBrand;
+//        private float productPrice;
+//        private String productDescription;
+        out.writeInt(productId);
+        out.writeObject(productName);
+        out.writeObject(productBrand);
+        out.writeFloat(productPrice);
+        out.writeObject(productDescription);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        productId = in.readInt();
+        productName = (String) in.readObject();
+        productBrand = (String) in.readObject();
+        productPrice = in.readFloat();
+        productDescription = (String) in.readObject();
     }
 }

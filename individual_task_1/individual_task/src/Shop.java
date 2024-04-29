@@ -1,14 +1,56 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-public class Shop {
-    private final TreeMap<Product, Integer> products;
-    private final HashMap<String, Customer> customers;
+public class Shop implements Externalizable {
+    private TreeMap<Product, Integer> products;
+    private HashMap<String, Customer> customers;
+    private String filename = "./individual_task_1/shop.ser";
 
     public Shop() {
         products = new TreeMap<>();
         customers = new HashMap<>();
+    }
+
+    public Shop(String path) {
+        Shop shop = deserializeShop(path);
+        products = shop.getProducts();
+        customers = shop.getCustomers();
+    }
+
+    // Method to save the shop
+    public void save() {
+        if (filename != null && !filename.isEmpty()) {
+            serializeShop(this, filename);
+            System.out.println("Shop saved to " + filename);
+        } else {
+            System.err.println("Filename is not set. Unable to save shop.");
+        }
+    }
+
+    // Method to serialize the shop
+    private static void serializeShop(Shop shop, String filename) {
+        try (FileOutputStream fileOut = new FileOutputStream(filename);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+            out.writeObject(shop);
+            System.out.println("Shop serialized to " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to deserialize the shop
+    private static Shop deserializeShop(String filename) {
+        try (FileInputStream fileIn = new FileInputStream(filename);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+            Shop shop = (Shop) in.readObject();
+            System.out.println("Shop deserialized from " + filename);
+            return shop;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void addProduct(Product product, int quantity) {
@@ -115,12 +157,18 @@ public class Shop {
 
     @Override
     public String toString() {
-        String productsString = "Products:\n";
+        String productsString = "SHOP:\n---Products:---";
         int index = 1;
         for (Product product : products.keySet()) {
             productsString += "\n\t" + index + ") " + "\n\tProduct id: " + product.getProductId() + "\n\tProduct Name" +
-                    product.getProductName() + "\n\tQuantity: " + products.get(product) + "\n";
+                    product.getProductName() + "\n\tQuantity: " + products.get(product);
             index++;
+        }
+        productsString += "\n---Customers:---";
+        index = 1;
+        for (Customer customer : customers.values()) {
+            productsString += "\n\t" + index++ + ")" + "\n\tCustomer Name: " + customer.getCustomerName() +
+                    "\n\tCustomer Email: " + customer.getCustomerEmail();
         }
         return productsString;
     }
@@ -203,5 +251,19 @@ public class Shop {
             return null;
         }
         return customers.get(email).getOrderList();
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        //private final TreeMap<Product, Integer> products;
+        //    private final HashMap<String, Customer> customers;
+        out.writeObject(products);
+        out.writeObject(customers);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        products = (TreeMap<Product, Integer>) in.readObject();
+        customers = (HashMap<String, Customer>) in.readObject();
     }
 }

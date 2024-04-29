@@ -1,7 +1,12 @@
+import java.io.Externalizable;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-public class Customer {
+public class Customer implements Externalizable {
     protected int customerID;
     protected String customerName;
     protected String customerEmail;
@@ -28,6 +33,9 @@ public class Customer {
         this.customerEmail = customerEmail;
         this.customerPhoneNumber = customerPhoneNumber;
         this.customerFunds = customerFunds;
+    }
+
+    public Customer() {
     }
 
     public int getCustomerID() {
@@ -142,5 +150,27 @@ public class Customer {
             totalPrice += product.getProductPrice();
         }
         return totalPrice;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(customerID);
+        out.writeObject(customerName);
+        out.writeObject(customerEmail);
+        out.writeObject(customerPhoneNumber);
+        out.writeFloat(customerFunds);
+        out.writeObject(shoppingCart);
+        out.writeObject(orderList);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        customerID = in.readInt();
+        customerName = (String) in.readObject();
+        customerEmail = (String) in.readObject();
+        customerPhoneNumber = (String) in.readObject();
+        customerFunds = in.readFloat();
+        shoppingCart = (TreeMap<Product, Integer>) in.readObject();
+        orderList = (ArrayList<Order>) in.readObject();
     }
 }

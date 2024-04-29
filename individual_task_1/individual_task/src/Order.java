@@ -1,10 +1,14 @@
 import java.util.TreeMap;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-public class Order {
-    private final int orderID;
-    private final int customerID;
-    private final TreeMap<Product, Integer> products;
-    private final float specialPriceRate;
+public class Order implements Externalizable {
+    private int orderID;
+    private int customerID;
+    private TreeMap<Product, Integer> products;
+    private float specialPriceRate;
 
     private static int lastAssignedOrderID = 1;
 
@@ -20,6 +24,9 @@ public class Order {
         this.customerID = customerID;
         this.products = products;
         this.specialPriceRate = specialPriceRate;
+    }
+
+    public Order() {
     }
 
     public int getOrderID() {
@@ -49,5 +56,21 @@ public class Order {
             result += " " + product + "\n\tQuantity: " + products.get(product);
         }
         return result;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(orderID);
+        out.writeInt(customerID);
+        out.writeObject(products);
+        out.writeFloat(specialPriceRate);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        orderID = in.readInt();
+        customerID = in.readInt();
+        products = (TreeMap<Product, Integer>) in.readObject();
+        specialPriceRate = in.readFloat();
     }
 }

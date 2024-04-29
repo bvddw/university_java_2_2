@@ -1,8 +1,12 @@
+import java.io.Externalizable;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
-public class VIPCustomer extends Customer {
-    private final float specialPriceRate;
+public class VIPCustomer extends Customer implements Externalizable {
+    private float specialPriceRate;
 
     public VIPCustomer(int customerID, String customerName, String customerEmail, String customerPhoneNumber, float customerFunds, TreeMap<Product, Integer> shoppingCart, ArrayList<Order> orderList) {
         super(customerID, customerName, customerEmail, customerPhoneNumber, customerFunds);
@@ -16,6 +20,9 @@ public class VIPCustomer extends Customer {
         this.specialPriceRate = 0.8f;
         this.shoppingCart = customer.getShoppingCart();
         this.orderList = customer.getOrderList();
+    }
+
+    public VIPCustomer() {
     }
 
     @Override
@@ -47,5 +54,29 @@ public class VIPCustomer extends Customer {
         return "VIP Customer \n\tcustomerID is " + customerID +
                 "\n\tName is " + customerName +
                 "\n\tFunds: $" + customerFunds;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeInt(customerID);
+        out.writeObject(customerName);
+        out.writeObject(customerEmail);
+        out.writeObject(customerPhoneNumber);
+        out.writeFloat(customerFunds);
+        out.writeObject(shoppingCart);
+        out.writeObject(orderList);
+        out.writeFloat(specialPriceRate);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        customerID = in.readInt();
+        customerName = (String) in.readObject();
+        customerEmail = (String) in.readObject();
+        customerPhoneNumber = (String) in.readObject();
+        customerFunds = in.readFloat();
+        shoppingCart = (TreeMap<Product, Integer>) in.readObject();
+        orderList = (ArrayList<Order>) in.readObject();
+        specialPriceRate = in.readFloat();
     }
 }
